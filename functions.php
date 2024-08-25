@@ -50,7 +50,7 @@ function getFirebaseData($table, $where = null, $values = null)
         $data = $snapshot->getValue();
 
         if (!empty($data)) {
-            echo json_encode(array("status" => "success", "data" => $data));
+            echo json_encode(array("status" => "succes", "data" => $data));
         } else {
             echo json_encode(array("status" => "failure"));
         }
@@ -86,7 +86,7 @@ function insertData($table, $data, $json = true) {
     $count = $stmt->rowCount();
     if ($json == true) {
         if ($count > 0) {
-            echo json_encode(array("status" => "success"));
+            echo json_encode(array("status" => "succes"));
         } else {
             echo json_encode(array("status" => "failure"));
         }
@@ -114,7 +114,7 @@ function updateData($table, $data, $where, $json = true)
     $count = $stmt->rowCount();
     if ($json == true) {
     if ($count > 0) {
-        echo json_encode(array("status" => "success"));
+        echo json_encode(array("status" => "succes"));
     } else {
         echo json_encode(array("status" => "failure"));
     }
@@ -130,13 +130,38 @@ function deleteData($table, $where, $json = true)
     $count = $stmt->rowCount();
     if ($json == true) {
         if ($count > 0) {
-            echo json_encode(array("status" => "success"));
+            echo json_encode(array("status" => "succes"));
+        } else {
+            echo json_encode(array("status" => "failure"));
+        }
+    }
+    
+}
+
+
+/* function deleteData($table, $where, $params, $json = true)
+{
+    global $con;
+    $sql = "DELETE FROM $table WHERE $where";
+    $stmt = $con->prepare($sql);
+    
+    // Binding parameters
+    foreach ($params as $key => $value) {
+        $stmt->bindValue($key, $value);
+    }
+    
+    $stmt->execute();
+    $count = $stmt->rowCount();
+    
+    if ($json == true) {
+        if ($count > 0) {
+            echo json_encode(array("status" => "succes"));
         } else {
             echo json_encode(array("status" => "failure"));
         }
     }
     return $count;
-}
+} */
 
 function imageUpload($imageRequest)
 {
@@ -188,11 +213,19 @@ function checkAuthenticate()
     // End 
 }
 
-function failurePrint($message='none'){
-    echo json_encode(array('status'=>'failure','message'=>$message));
+function getUserData($con, $usersLogin) {
+    $stmt = $con->prepare("SELECT * FROM users WHERE users_login = ?");
+    $stmt->execute(array($usersLogin));
+    $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $userData;
 }
-function seccesPrint($message='none'){
-    echo json_encode(array('status'=>'succes','message'=>$message));
+
+function seccesPrint($data) {
+    echo json_encode(array("status" => "succes", "data" => $data));
+}
+
+function failurePrint($message) {
+    echo json_encode(array("status" => "failure", "message" => $message));
 }
 
 /* 
@@ -255,6 +288,99 @@ function getAllLocalData($con) {
     }
     return $allData;
 }
+function getData($table, $where = null, $values = null,$json=true)
+{
+    global $con;
+    $data = array();
+    $stmt = $con->prepare("SELECT  * FROM $table WHERE   $where ");
+    $stmt->execute($values);
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    $count  = $stmt->rowCount();
+    if ($json==true){
+        if ($count > 0){
+            echo json_encode(array("status" => "succes", "data" => $data));
+        } else {
+            echo json_encode(array("status" => "failure"));
+        }
+
+    }else{
+        return $count;
+
+
+    }
+    
+}
+function getAllData($table, $where = null, $values = null,$json= true)
+{
+    global $con;
+    $data = array();
+    if ($where == null) { // Si $where est nul, on récupère toutes les données
+        $stmt = $con->prepare("SELECT * FROM $table");
+        $stmt->execute();
+    } else { // Sinon, on utilise $where dans la clause WHERE
+        $stmt = $con->prepare("SELECT * FROM $table WHERE $where");
+        $stmt->execute($values);
+    }
+    
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $count = $stmt->rowCount();
+    if ($json == true){
+        if ($count > 0){
+            echo json_encode(array("status" => "succes", "data" => $data));
+        } else {
+            echo json_encode(array("status" => "failure"));
+        }
+            return $count;
+
+    }else{
+        if ($count > 0){
+            return $data;
+
+        }else{
+            return json_encode(array("status" => "failure"));
+
+        }
+
+    }
+
+}
+
+function getAllData2($table, $where = null, $values = null,$json= true)
+{
+    global $con;
+    $data = array();
+    if ($where == null) { // Si $where est nul, on récupère toutes les données
+        $stmt = $con->prepare("SELECT * FROM $table");
+        $stmt->execute();
+    } else { // Sinon, on utilise $where dans la clause WHERE
+        $stmt = $con->prepare("SELECT * FROM $table WHERE $where");
+        $stmt->execute($values);
+    }
+    
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $count = $stmt->rowCount();
+    if ($json == true){
+        if ($count > 0){
+            echo json_encode(array("status" => "succes", "data" => $data));
+        } else {
+            echo json_encode(array("status" => "failure"));
+        }
+            return $count;
+
+    }else{
+        if ($count > 0){
+            return array("status" => "succes","data"=> $data);
+
+
+        }else{
+            return array("status" => "failure");
+
+        }
+
+    }
+
+}
+
 
 function loadToFirebase($data) {
     $serviceAccount = __DIR__ . '/config/lesaffre-b1bae-firebase-adminsdk-454oo-13f79cf693.json';
