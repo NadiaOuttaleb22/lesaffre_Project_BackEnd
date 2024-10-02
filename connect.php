@@ -48,10 +48,9 @@ $factory = (new Factory)
 $auth = $factory->createAuth();
 $database = $factory->createDatabase();
 
-// Mettez à jour ici le DSN avec le nouveau serveur et port si nécessaire
-$dsn = "mysql:host=localhost;port=8000;dbname=lesaffre";  // Si le port est différent, mettez-le à jour
-$user = "root";  // Mettez à jour si nécessaire
-$pass = "root";  // Mettez à jour si nécessaire
+$dsn = "mysql:host=localhost;port=3306;dbname=lesaffre";
+$user = "root"; 
+$pass="root";
 $option = array(
    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES UTF8"
 );

@@ -5,5 +5,8 @@ include "../connect.php";
 $usersid = filterRequest('cart_usersid');
 $itemsid = filterRequest('card_itemsid');
 
-
-deleteData("card","card_id = (SELECT card_id FROM card WHERE `card_usersid` = $usersid AND `card_itemsid` = $itemsid LIMIT 1)");
+deleteDataa("card", "card_id IN  (
+    SELECT card_id FROM (
+        SELECT card_id FROM card WHERE card_usersid = $usersid AND card_itemsid = $itemsid AND card_orders = 0 LIMIT 1 
+    ) AS subquery
+)");

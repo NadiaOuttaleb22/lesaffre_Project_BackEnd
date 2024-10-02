@@ -9,7 +9,7 @@ $dicount= filterRequest('dicount');
 
 
 
-$count=getData('card',"card_itemsid = $itemsid AND card_usersid =$usersid",null,false);
+$count=getData('card',"card_itemsid = $itemsid AND card_usersid =$usersid AND card_orders = 0",null,false);
 
     $data=array(
         "card_usersid" =>  $usersid,

@@ -4,7 +4,7 @@ include "../connect.php";
 $usersid = filterRequest('cart_usersid');
 $itemsid = filterRequest('card_itemsid');
 
-$stmt =$con->prepare("SELECT COUNT(card.card_id) as countitems FROM `card` WHERE card_usersid=$usersid and card_itemsid =$itemsid");
+$stmt =$con->prepare("SELECT COUNT(card.card_id) as countitems FROM `card` WHERE card_usersid=$usersid and card_itemsid =$itemsid AND card_orders = 0");
 $stmt->execute();
 
 $count = $stmt->rowCount();

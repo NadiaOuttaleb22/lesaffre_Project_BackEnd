@@ -16,13 +16,8 @@ $where = ['name' => '=', 'age' => '>='];
 $values = ['name' => 'John', 'age' => 25]; */
 
 //getFirebaseData('users', '1=1');
-
-
-
-
-$dsn = "mysql:host=localhost;dbname=lesafre";
-$user = "root";
-$pass = "";
-
-//migrateData($dsn, $user, $pass);
-getFirebaseData('users', '1=1');
+//sendemail("nadiaouttaleb2@gmail.com",'here is your Verify code ',"Verify code");
+echo 'succes';
+$notauth="";
+//sendGCM("hi","howare you","users","","");
+echo 'not auth';

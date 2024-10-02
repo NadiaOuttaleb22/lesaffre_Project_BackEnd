@@ -4,7 +4,7 @@ define("MB", 1048576);
 
 
 
-
+date_default_timezone_set('Africa/Casablanca');
 
 require 'vendor/autoload.php';
 
@@ -137,22 +137,12 @@ function deleteData($table, $where, $json = true)
     }
     
 }
-
-
-/* function deleteData($table, $where, $params, $json = true)
+function deleteDataa($table, $where, $json = true)
 {
     global $con;
-    $sql = "DELETE FROM $table WHERE $where";
-    $stmt = $con->prepare($sql);
-    
-    // Binding parameters
-    foreach ($params as $key => $value) {
-        $stmt->bindValue($key, $value);
-    }
-    
+    $stmt = $con->prepare("DELETE c FROM $table c WHERE $where");
     $stmt->execute();
     $count = $stmt->rowCount();
-    
     if ($json == true) {
         if ($count > 0) {
             echo json_encode(array("status" => "succes"));
@@ -160,16 +150,17 @@ function deleteData($table, $where, $json = true)
             echo json_encode(array("status" => "failure"));
         }
     }
-    return $count;
-} */
+}
 
-function imageUpload($imageRequest)
+
+function imageUpload($dir,$imageRequest)
 {
   global $msgError;
-  $imagename  = rand(1000, 10000) . $_FILES[$imageRequest]['name'];
+  if (isset($_FILES[$imageRequest])) {
+    $imagename  = rand(1000, 10000) . $_FILES[$imageRequest]['name'];
   $imagetmp   = $_FILES[$imageRequest]['tmp_name'];
   $imagesize  = $_FILES[$imageRequest]['size'];
-  $allowExt   = array("jpg", "png", "gif", "mp3", "pdf");
+  $allowExt   = array("jpg", "png", "gif", "mp3", "pdf","svg");
   $strToArray = explode(".", $imagename);
   $ext        = end($strToArray);
   $ext        = strtolower($ext);
@@ -181,11 +172,17 @@ function imageUpload($imageRequest)
     $msgError = "size";
   }
   if (empty($msgError)) {
-    move_uploaded_file($imagetmp,  "../upload/" . $imagename);
+    move_uploaded_file($imagetmp,  $dir."/" . $imagename);
     return $imagename;
   } else {
-    return "fail";
+    return "faill";
   }
+  }else{
+    return "fail";
+
+
+  }
+  
 }
 
 
@@ -417,3 +414,49 @@ function migrateData($dsn, $user, $pass) {
 function filterRequest($field) {
     return isset($_POST[$field]) ? htmlspecialchars(strip_tags($_POST[$field])) : null;
 }
+
+
+/* 
+function sendGCM($title, $message, $topic, $pageid, $pagename)
+{
+
+
+    $url = 'https://fcm.googleapis.com/fcm/send';
+
+    $fields = array(
+        "to" => '/topics/' . $topic,
+        'priority' => 'high',
+        'content_available' => true,
+
+        'notification' => array(
+            "body" =>  $message,
+            "title" =>  $title,
+            "click_action" => "FLUTTER_NOTIFICATION_CLICK",
+            "sound" => "default"
+
+        ),
+        'data' => array(
+            "pageid" => $pageid,
+            "pagename" => $pagename
+        )
+
+    );
+
+
+    $fields = json_encode($fields);
+    $headers = array(
+        'Authorization: key=' . "",
+        'Content-Type: application/json'
+    );
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+
+    $result = curl_exec($ch);
+    return $result;
+    curl_close($ch);
+} */
