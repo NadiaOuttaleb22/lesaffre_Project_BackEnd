@@ -150,7 +150,7 @@ GROUP BY
     items_lunch.items_image,
     users.users_name  
 
-//
+
 
 
 CREATE OR REPLACE VIEW items_in_pending_orders AS
@@ -276,4 +276,6 @@ GROUP BY
 CREATE OR REPLACE VIEW user_orders_summary_breakfast AS SELECT users.users_id, users.users_name, SUM( IF( card_breackfast.dicount = 1, items_breakfast.items_price - items_breakfast.items_price * items_breakfast.items_discount / 100, items_breakfast.items_price ) ) AS total_price, COUNT(DISTINCT orders_breackfast.orders_id) AS total_orders FROM items_breakfast INNER JOIN card_breackfast ON items_breakfast.items_id = card_breackfast.card_itemsid INNER JOIN orders_breackfast ON orders_breackfast.orders_id = card_breackfast.card_orders INNER JOIN users ON users.users_id = card_breackfast.card_usersid WHERE orders_breackfast.orders_status = 2 AND orders_breackfast.orders_pass = 0 GROUP BY users.users_id, users.users_name;
 
 
-CREATE OR REPLACE VIEW items_summary_in_pending_orders_breackfast AS SELECT items_breakfast.items_name, COUNT(items_breakfast.items_id) AS total_orders, SUM( IF( card_breackfast.dicount = 1, items_breakfast.items_price - items_breakfast.items_price * items_breakfast.items_discount / 100, items_breakfast.items_price ) ) AS total_price FROM items_breakfast INNER JOIN card_breackfast ON items_breakfast.items_id = card_breackfast.card_itemsid INNER JOIN orders_breackfast ON orders_breackfast.orders_id = card_breackfast.card_orders WHERE orders_breackfast.orders_status = 0 GROUP BY items_breakfast.items_name;
+CREATE OR REPLACE VIEW items_summary_in_pending_orders_breackfast AS 
+SELECT items_breakfast.items_name, COUNT(items_breakfast.items_id) 
+AS total_orders, SUM( IF( card_breackfast.dicount = 1, items_breakfast.items_price - items_breakfast.items_price * items_breakfast.items_discount / 100, items_breakfast.items_price ) ) AS total_price FROM items_breakfast INNER JOIN card_breackfast ON items_breakfast.items_id = card_breackfast.card_itemsid INNER JOIN orders_breackfast ON orders_breackfast.orders_id = card_breackfast.card_orders WHERE orders_breackfast.orders_status = 0 GROUP BY items_breakfast.items_name;
